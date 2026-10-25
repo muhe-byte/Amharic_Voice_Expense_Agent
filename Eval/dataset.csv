@@ -1,0 +1,51 @@
+id,audio_file,speaker_id,noise_level,reference_transcript,intent,expected_amount,expected_category,expected_date_ref,expected_date,expected_behavior
+A01,A01.amr,S1,quiet,ዛሬ ለታክሲ ሃያ ብር ከፈልኩ,add_expense,20,Transport,today,2026-10-25,save-after-confirm
+A02,A02.amr,S1,quiet,ትናንት ለምሳ ሠላሳ አምስት ብር አወጣሁ,add_expense,35,Food,yesterday,2026-10-24,save-after-confirm
+A03,A03.amr,S1,quiet,ዛሬ ለቡና አሥር ብር ከፈልኩ,add_expense,10,Food,today,2026-10-25,save-after-confirm
+A04,A04.amr,S1,quiet,ትናንት ለታክሲ አሥራ አምስት ብር ከፈልኩ,add_expense,15,Transport,yesterday,2026-10-24,save-after-confirm
+A05,A05.amr,S1,quiet,ዛሬ ለቡና ሃምሳ ብር ከፈልኩ,add_expense,50,Food,today,2026-10-25,save-after-confirm
+A06,A06.amr,S1,quiet,ትናንት ለታክሲ ሰባ አምስት ብር ከፈልኩ,add_expense,75,Transport,yesterday,2026-10-24,save-after-confirm
+A07,A07.amr,S1,quiet,ዛሬ ለምሳ ሰማንያ አምስት ብር አወጣሁ,add_expense,85,Food,today,2026-10-25,save-after-confirm
+A08,A08.amr,S1,quiet,ከትናንት ወዲያ ለታክሲ አርባ ብር ከፈልኩ,add_expense,40,Transport,day_before,2026-10-23,save-after-confirm
+B01,B01.amr,S1,quiet,ዛሬ ለምግብ መቶ ብር አወጣሁ,add_expense,100,Food,today,2026-10-25,save-after-confirm
+B02,B02.amr,S1,quiet,ትናንት ለምግብ መቶ ሃያ ብር ከፈልኩ,add_expense,120,Food,yesterday,2026-10-24,save-after-confirm
+B03,B03.amr,S1,quiet,ትናንት ለትራንስፖርት ሁለት መቶ ሃምሳ ብር ከፈልኩ,add_expense,250,Transport,yesterday,2026-10-24,save-after-confirm
+B04,B04.amr,S1,quiet,ዛሬ ለልብስ ሦስት መቶ ብር ከፈልኩ,add_expense,300,Shopping,today,2026-10-25,save-after-confirm
+B05,B05.amr,S1,quiet,ዛሬ ለልብስ ሦስት መቶ ሃምሳ ብር አወጣሁ,add_expense,350,Shopping,today,2026-10-25,save-after-confirm
+B06,B06.amr,S1,quiet,ከትናንት ወዲያ ለሞባይል ካርድ አራት መቶ ሃምሳ ብር ከፈልኩ,add_expense,450,Airtime,day_before,2026-10-23,save-after-confirm
+B07,B07.amr,S1,quiet,ትናንት ለውሃ አምስት መቶ ብር ከፈልኩ,add_expense,500,Utilities,yesterday,2026-10-24,save-after-confirm
+B08,B08.amr,S1,quiet,ዛሬ ለምግብ ስምንት መቶ ብር አወጣሁ,add_expense,800,Food,today,2026-10-25,save-after-confirm
+C01,C01.aac,S2,quiet,ትናንት ለኤሌክትሪክ አንድ ሺህ ሁለት መቶ ብር ከፈልኩ,add_expense,1200,Utilities,yesterday,2026-10-24,save-after-confirm
+C02,C02.aac,S2,quiet,ዛሬ ለቤት ኪራይ አንድ ሺህ አምስት መቶ ብር ከፈልኩ,add_expense,1500,Rent,today,2026-10-25,save-after-confirm
+C03,C03.aac,S2,quiet,ዛሬ ለቤት ኪራይ ሁለት ሺህ ብር ከፈልኩ,add_expense,2000,Rent,today,2026-10-25,save-after-confirm
+C04,C04.aac,S2,quiet,ትናንት ለልብስ ሁለት ሺህ አምስት መቶ ብር አወጣሁ,add_expense,2500,Shopping,yesterday,2026-10-24,save-after-confirm
+C05,C05.aac,S2,quiet,ከትናንት ወዲያ ለኤሌክትሪክ ሦስት ሺህ ብር ከፈልኩ,add_expense,3000,Utilities,day_before,2026-10-23,save-after-confirm
+C06,C06.aac,S2,quiet,ዛሬ ለቤት ኪራይ አምስት ሺህ ብር ከፈልኩ,add_expense,5000,Rent,today,2026-10-25,save-after-confirm
+D01,D01.aac,S2,quiet,ዛሬ ለታክሲ ሁለት መቶ ሃምሳ ብር ከፈልኩ,add_expense,250,Transport,today,2026-10-25,save-after-confirm
+D02,D02.aac,S2,quiet,ትናንት ለታክሲ ሁለት መቶ ሃምሳ ብር ከፈልኩ,add_expense,250,Transport,yesterday,2026-10-24,save-after-confirm
+D03,D03.aac,S2,quiet,ከትናንት ወዲያ ለታክሲ ሁለት መቶ ሃምሳ ብር ከፈልኩ,add_expense,250,Transport,day_before,2026-10-23,save-after-confirm
+D04,D04.aac,S2,quiet,ለታክሲ ሁለት መቶ ሃምሳ ብር ከፈልኩ,add_expense,250,Transport,none,2026-10-25,save-after-confirm
+D05,D05.aac,S2,quiet,ባለፈው ሳምንት ለታክሲ ሁለት መቶ ሃምሳ ብር ከፈልኩ,add_expense,250,Transport,other,,ask-date
+D06,D06.aac,S2,quiet,ዛሬ ጠዋት ለታክሲ ሁለት መቶ ሃምሳ ብር ከፈልኩ,add_expense,250,Transport,today,2026-10-25,save-after-confirm
+E01,E01.aac,S2,quiet,ዛሬ ለውሃ ሰባ ብር ከፈልኩ,add_expense,70,Utilities,today,2026-10-25,save-after-confirm
+E02,E02.aac,S2,quiet,ትናንት ለሞባይል ካርድ መቶ ብር ከፈልኩ,add_expense,100,Airtime,yesterday,2026-10-24,save-after-confirm
+E03,E03.aac,S2,quiet,ዛሬ ለጫማ አራት መቶ ብር አወጣሁ,add_expense,400,Shopping,today,2026-10-25,save-after-confirm
+E04,E04.aac,S2,quiet,ዛሬ ለመድኃኒት ሁለት መቶ ብር ከፈልኩ,add_expense,200,Other,today,2026-10-25,save-after-confirm
+E05,E05.m4a,S3,quiet,ትናንት ለስጦታ ሦስት መቶ ብር አወጣሁ,add_expense,300,Other,yesterday,2026-10-24,save-after-confirm
+E06,E06.m4a,S3,quiet,ዛሬ ለእራት ሁለት መቶ ብር ከፈልኩ,add_expense,200,Food,today,2026-10-25,save-after-confirm
+F01,F01.m4a,S3,quiet,ዛሬ ለትራንስፖርት ምን ያህል አወጣሁ?,query_spending,,Transport,today,2026-10-25,answer-query
+F02,F02.m4a,S3,quiet,ትናንት ለምግብ ምን ያህል አወጣሁ?,query_spending,,Food,yesterday,2026-10-24,answer-query
+F03,F03.m4a,S3,quiet,በዚህ ወር ለትራንስፖርት ምን ያህል አወጣሁ?,query_spending,,Transport,other,,answer-query
+F04,F04.m4a,S3,quiet,በዚህ ወር ጠቅላላ ወጪዬ ስንት ነው?,query_spending,,,other,,answer-query
+F05,F05.m4a,S3,quiet,ዛሬ ምን ያህል አወጣሁ?,query_spending,,,today,2026-10-25,answer-query
+F06,F06.m4a,S3,quiet,በዚህ ወር ለምግብ ምን ያህል አወጣሁ?,query_spending,,Food,other,,answer-query
+G01,G01.m4a,S3,quiet,ትናንት ለታክሲ ከፈልኩ,add_expense,,Transport,yesterday,2026-10-24,ask-amount
+G02,G02.m4a,S3,quiet,ዛሬ ለምሳ አወጣሁ,add_expense,,Food,today,2026-10-25,ask-amount
+G03,G03.m4a,S3,quiet,ትናንት ለልብስ ገንዘብ አወጣሁ,add_expense,,Shopping,yesterday,2026-10-24,ask-amount
+H01,H01.m4a,S1,noisy,ትናንት ለትራንስፖርት ሁለት መቶ ሃምሳ ብር ከፈልኩ,add_expense,250,Transport,yesterday,2026-10-24,save-after-confirm
+H02,H02.m4a,S1,noisy,ዛሬ ለቡና ሃምሳ ብር ከፈልኩ,add_expense,50,Food,today,2026-10-25,save-after-confirm
+H03,H03.m4a,S1,noisy,ትናንት ለታክሲ አሥራ አምስት ብር ከፈልኩ,add_expense,15,Transport,yesterday,2026-10-24,save-after-confirm
+H04,H04.m4a,S2,noisy,ትናንት ለኤሌክትሪክ ሁለት ሺህ ብር ከፈልኩ,add_expense,1200,Utilities,yesterday,2026-10-24,save-after-confirm
+I01,I01.m4a,S3,quiet,ሰላም እንዴት ነህ?,other,,,none,,refuse-no-tool
+I02,I02.m4a,S3,quiet,አመሰግናለሁ,other,,,none,,refuse-no-tool
+I03,I03.m4a,S3,quiet,ነገ ዝናብ ይዘንባል?,other,,,none,,refuse-no-tool

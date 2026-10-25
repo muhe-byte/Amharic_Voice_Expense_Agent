@@ -41,10 +41,10 @@ Amharic Voice Expense Assistant.
    - transcript: Verbatim Fidel text.
    - amount: Numeric float in ETB (null if missing or unclear; never guess).
    - currency: "ETB".
-   - category: Transport, Food, Utilities, Shopping, Entertainment, Health, Education, or Other.
+   - category: Transport, Food, Utilities, Airtime, Shopping, Rent, or Other.
    - date_expression: Raw phrase mentioned or "ዛሬ".
    - days_ago_delta: Integer day offset (0 for today/unspecified, -1 for yesterday, -2 for day before yesterday, -7 for last week, -N for N days ago). Must be <= 0.
-   - intent: "add_expense", "spending_query", or "clarification_needed".
+   - intent: "add_expense", "query_spending", or "other".
    - is_clear: boolean flag.
    - clarification_question: Amharic clarification question if amount or details are missing.
 """
@@ -66,7 +66,7 @@ class ExtractedExpensePayload(BaseModel):
     )
     category: str = Field(
         default="Other",
-        description="Standardized category e.g. Transport, Food, Utilities, Shopping, Health, Education, Other."
+        description="Standardized category e.g. Transport, Food, Utilities, Airtime, Shopping, Rent, Other."
     )
     date_expression: Optional[str] = Field(
         default="ዛሬ",
@@ -82,7 +82,7 @@ class ExtractedExpensePayload(BaseModel):
     )
     intent: str = Field(
         default="add_expense",
-        description="'add_expense', 'spending_query', or 'clarification_needed'."
+        description="'add_expense', 'query_spending', 'spending_query', 'other', or 'clarification_needed'."
     )
     is_clear: bool = Field(
         default=True,
@@ -261,6 +261,10 @@ class ExpenseAgent:
         except Exception as err:
             logger.error("Failed to parse Gemini output as ExtractedExpensePayload: %s | Raw: %s", err, raw_text_json)
             raise ValueError(f"Malformed JSON from Gemini: {err}") from err
+
+        # Normalize intent aliases
+        if payload.intent == "spending_query":
+            payload.intent = "query_spending"
 
         # If audio/text was unintelligible or not an expense
         if not payload.is_clear or payload.intent != "add_expense":

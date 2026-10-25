@@ -1,7 +1,30 @@
-﻿.env
-credentials.json
+# Environment and secrets
+.env
+.env.*
+*.env
+credentials*.json
+service_account*.json
+*.key
+*.pem
+
+# Python virtual environments
 venv/
+.venv/
+voice_agent/
+env/
+ENV/
+
+# Python cache and bytecode
 __pycache__/
-*.mp3
-*.ogg
+*.py[cod]
+*$py.class
 .pytest_cache/
+
+# Audio temporary files and logs
+*.mp3
+*.tmp
+*.log
+
+# OS metadata
+.DS_Store
+Thumbs.db

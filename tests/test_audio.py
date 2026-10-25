@@ -33,3 +33,13 @@ class TestAudioModule:
         non_existent = tmp_path / "phantom.mp3"
         # Should not raise exception
         audio.cleanup_files(non_existent, None)
+
+    def test_supported_audio_extensions(self):
+        assert ".aac" in audio.SUPPORTED_AUDIO_EXTENSIONS
+        assert ".amr" in audio.SUPPORTED_AUDIO_EXTENSIONS
+        assert ".m4a" in audio.SUPPORTED_AUDIO_EXTENSIONS
+
+    def test_convert_to_temp_mp3_non_existent(self, tmp_path):
+        missing = tmp_path / "missing.aac"
+        with pytest.raises(AudioConversionError, match="does not exist"):
+            audio.convert_to_temp_mp3(missing)

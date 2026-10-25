@@ -1,8 +1,9 @@
 """
 Audio Processing Module for Amharic Voice Expense Agent.
 
-Handles downloading Telegram voice notes (.oga/.ogg) and converting them
-to MP3 format via FFmpeg using either system FFmpeg or bundled imageio-ffmpeg.
+Handles downloading Telegram voice notes (.oga/.ogg) and mobile audio
+recordings (.aac, .amr, .m4a), converting them to 128k mono MP3 format
+via FFmpeg using either system FFmpeg or bundled imageio-ffmpeg.
 """
 
 from __future__ import annotations
@@ -18,6 +19,20 @@ from typing import Optional, Union
 from error_handler import AudioConversionError
 
 logger = logging.getLogger(__name__)
+
+# Supported audio formats for ingestion & evaluation
+SUPPORTED_AUDIO_EXTENSIONS = {
+    ".aac",
+    ".amr",
+    ".m4a",
+    ".oga",
+    ".ogg",
+    ".wav",
+    ".mp3",
+    ".flac",
+    ".mp4",
+    ".3gp",
+}
 
 
 def get_ffmpeg_path() -> str:
@@ -50,12 +65,12 @@ def convert_to_mp3(
     sample_rate: int = 44100,
 ) -> Path:
     """
-    Converts an audio file (e.g. .oga, .ogg, .wav) to MP3 using FFmpeg.
+    Converts an audio file (.aac, .amr, .m4a, .oga, .ogg, .wav, etc.) to 128k mono MP3 using FFmpeg.
 
     Args:
         input_path: Path to input audio file.
         output_path: Path for converted .mp3. If None, created alongside input with .mp3 extension.
-        bitrate: Audio bitrate, default 128k.
+        bitrate: Audio bitrate, default '128k'.
         sample_rate: Audio sample rate, default 44100 Hz.
 
     Returns:
@@ -114,6 +129,69 @@ def convert_to_mp3(
 
     logger.info("Audio successfully converted to MP3: %s (%d bytes)", out_p.name, out_p.stat().st_size)
     return out_p
+
+
+def convert_to_temp_mp3(
+    input_path: Union[str, Path],
+    temp_dir: Optional[Union[str, Path]] = None,
+    bitrate: str = "128k",
+    sample_rate: int = 44100,
+) -> Path:
+    """
+    Automatically converts any supported audio file (.aac, .amr, .m4a, .oga, .ogg, .wav, etc.)
+    into a temporary 128k mono .mp3 file for Gemini processing.
+
+    Args:
+        input_path: Path to the source audio file.
+        temp_dir: Optional custom temporary directory. If None, uses default OS temp directory.
+        bitrate: Audio bitrate (default '128k').
+        sample_rate: Audio sampling rate (default 44100 Hz).
+
+    Returns:
+        Path to the generated temporary MP3 file. Caller is responsible for deleting it
+        or using cleanup_files().
+    """
+    in_p = Path(input_path).resolve()
+    if not in_p.exists():
+        raise AudioConversionError(f"Audio file does not exist: {in_p}")
+
+    ext = in_p.suffix.lower()
+    if ext not in SUPPORTED_AUDIO_EXTENSIONS:
+        logger.warning(
+            "Audio extension '%s' not in known supported set %s; FFmpeg will attempt auto-detection.",
+            ext,
+            SUPPORTED_AUDIO_EXTENSIONS,
+        )
+
+    # Create temporary MP3 file
+    if temp_dir is not None:
+        td = Path(temp_dir)
+        td.mkdir(parents=True, exist_ok=True)
+        temp_file = tempfile.NamedTemporaryFile(
+            prefix=f"eval_{in_p.stem}_", suffix=".mp3", dir=str(td), delete=False
+        )
+    else:
+        temp_file = tempfile.NamedTemporaryFile(
+            prefix=f"eval_{in_p.stem}_", suffix=".mp3", delete=False
+        )
+
+    temp_mp3_path = Path(temp_file.name)
+    temp_file.close()
+
+    try:
+        return convert_to_mp3(
+            input_path=in_p,
+            output_path=temp_mp3_path,
+            bitrate=bitrate,
+            sample_rate=sample_rate,
+        )
+    except Exception:
+        if temp_mp3_path.exists():
+            try:
+                temp_mp3_path.unlink()
+            except Exception:
+                pass
+        raise
 
 
 def cleanup_files(*paths: Optional[Union[str, Path]]) -> None:

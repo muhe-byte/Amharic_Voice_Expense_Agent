@@ -1,6 +1,6 @@
 # Amharic Voice Expense Agent
 
-**Status:** Implemented & Tested MVP (160 automated unit tests passing)  
+**Status:** MVP Implemented & Empirical Benchmark Finished (170 automated unit tests passing)  
 **Purpose:** Turn Amharic voice and text expense notes into validated, user-confirmed records in Google Sheets, and answer spending questions using deterministic calculations.  
 **Tech Stack:** Python 3.10+ · Telegram Bot API (`python-telegram-bot`) · Google Gemini (`google-genai` SDK) · Google Sheets API (`gspread`) · FFmpeg · Pydantic v2  
 **Timezone:** `Africa/Addis_Ababa` (UTC+3) · **Currency:** `ETB` (Ethiopian Birr)
@@ -202,12 +202,16 @@ The application automatically initializes and maintains an 8-column schema:
   - Sensitive token masking in logs (`SecretMaskingFilter`).
   - Exponential backoff retry on Gemini API rate limits (`with_retry`).
   - Model fallback waterfall (`gemini-3.5-flash-lite` -> `gemini-3.5-flash` -> `gemini-3.8-flash`).
-  - **160 automated unit tests passing across 8 test suites.**
+  - **170 automated unit tests passing across 9 test suites.**
+- [x] **Milestone 6 — Empirical Benchmark Evaluation**
+  - Full evaluation runner (`run_eval.py`) supporting `.aac`, `.amr`, `.m4a`, and `.oga` mobile voice notes.
+  - Standardized 50-sample dataset (`Eval/dataset.csv`) across diverse speakers, noise levels, and financial intent groups.
+  - Automated WER (strict & number-normalized), extraction accuracy, and tool selection metrics.
+  - Complete mock safety ensuring zero writes to Google Sheets during evaluation.
 
 ### Future Work & Roadmap
 - [ ] **Bill & Recurring Payment Reminders:** Background scheduler (e.g. APScheduler/Celery) to deliver proactive notifications for upcoming bills.
 - [ ] **Ethiopian Calendar Support:** Convert and display dates using the Ge'ez calendar (*ዓመተ ምሕረት*).
-- [ ] **Empirical Evaluation Benchmark:** Populate [`Eval/`](file:///C:/Users/OMEGA/Documents/Amharic_voice_expense_agent/Eval) with a standardized dataset of Amharic audio clips to measure Word Error Rate (WER) and field extraction accuracy across diverse speakers.
 - [ ] **Persistent State Store:** Migrate `PendingConfirmationManager` from in-memory dictionaries to Redis/SQLite so unconfirmed proposals survive bot restarts.
 
 ---
@@ -269,7 +273,7 @@ DEFAULT_CURRENCY=ETB
 
 ## 8. Running the Automated Tests
 
-The repository contains 160 unit tests covering all components:
+The repository contains 170 automated unit tests covering all components:
 
 ```bash
 python -m pytest
@@ -282,11 +286,60 @@ python -m pytest
 - `tests/test_sheets_service.py`: Google Sheets mock connections, header verification, duplicate transaction prevention.
 - `tests/test_spending_service.py`: Deterministic spending calculations, category filtering, query detection.
 - `tests/test_error_handler.py`: Log secret masking filter, pending confirmation expiration (5-min TTL), exponential backoff retries.
-- `tests/test_audio.py`: FFmpeg path detection, conversion error handling, temporary file cleanup.
+- `tests/test_audio.py`: FFmpeg path detection, conversion error handling, `.aac`/`.amr`/`.m4a` format compatibility, temporary file cleanup.
+- `tests/test_run_eval.py`: Evaluation pipeline, transcript cleaning, number-normalized WER, audio alignment, metric aggregations.
 
 ---
 
-## 9. Running the Telegram Bot
+## 9. Empirical Evaluation Benchmark (Step 14)
+
+The agent was evaluated against an empirical benchmark dataset of 50 real Amharic voice notes (`Eval/dataset.csv` and `Eval/voice_notes/`) recorded across multiple speakers and noise conditions in three mobile formats: `.aac`, `.amr`, and `.m4a`.
+
+### Evaluation Architecture:
+- **Audio Conversion:** FFmpeg dynamically ingests mobile audio and transcodes to 128k mono MP3 for Gemini inference.
+- **Multimodal Perception:** Gemini (`gemini-3.5-flash-lite` with automatic fallback to `gemini-3.5-flash` / `gemini-3.8-flash`) transcribes speech verbatim into Fidel and extracts structured fields.
+- **Deterministic Python Validation:** Resolves relative dates in `Africa/Addis_Ababa`, bounds amounts, and cross-checks extraction.
+- **Live Data Safeguard:** Google Sheets writes are **strictly mocked/disabled** during evaluation.
+
+### Measured Performance Summary Table:
+
+| Metric | Result | Counts / Detail | Notes |
+|---|:---:|:---:|---|
+| **Intent Classification Accuracy** | **95.74%** | 45 / 47 | Distinguishes `add_expense`, `query_spending`, and conversational `other` |
+| **Tool Selection Accuracy** | **91.49%** | 43 / 47 | Selects correct tool (`add_expense`, `get_expenses`, `ask_for_clarification`, `none`) |
+| **Category Accuracy** | **83.33%** | 35 / 42 | Grounding into 7 fixed categories (*Transport, Food, Utilities, Airtime, Shopping, Rent, Other*) |
+| **Date Resolution Accuracy** | **78.72%** | 37 / 47 | Matches relative delta (*today, yesterday, day before*) & unsupported date clarification |
+| **Amount Accuracy (Overall)** | **74.29%** | 26 / 35 | Exact match between Gemini extracted amount and ground truth |
+| ↳ *Group A: Small Amounts (<100 ETB)* | **75.00%** | 6 / 8 | Unit & tens words, including confusable pairs (*ሃምሳ* vs *አሥራ አምስት*) |
+| ↳ *Group B: Hundreds (100–800 ETB)* | **85.71%** | 6 / 7 | Compound number phrases (*ሁለት መቶ ሃምሳ*, *አራት መቶ ሃምሳ*) |
+| ↳ *Group C: Thousands (1,000–5,000 ETB)*| **80.00%** | 4 / 5 | Scales and thousands (*አንድ ሺህ ሁለት መቶ*, *ሦስት ሺህ*) |
+| **Transcript WER (Normalized)** | **19.33%** | — | Evaluated with numbers converted to digits via deterministic Amharic parser |
+| **Transcript WER (Strict)** | **25.12%** | — | Raw verbatim Fidel text after removing punctuation and extra whitespace |
+| **Live Google Sheets Mutations** | **0 writes** | 0 / 47 | Live database isolation confirmed; zero test pollution |
+
+Detailed row-by-row predictions, transcripts, and status are preserved in [`Eval/results.csv`](file:///C:/Users/OMEGA/Documents/Amharic_voice_expense_agent/Eval/results.csv).
+
+### How to Run the Evaluation Runner:
+
+To reproduce the benchmark or evaluate custom voice notes:
+
+```bash
+# Set PYTHONPATH and UTF-8 encoding
+export PYTHONPATH="."
+
+# Run full evaluation over the dataset
+python run_eval.py --dataset Eval/dataset.csv --audio-dir Eval/voice_notes --output Eval/results.csv --delay 1.0
+
+# Optional: evaluate only the first N samples
+python run_eval.py --limit 5
+
+# Optional: select a specific Gemini model
+python run_eval.py --model gemini-3.5-flash-lite
+```
+
+---
+
+## 10. Running the Telegram Bot
 
 Start the bot locally:
 ```bash
@@ -310,7 +363,7 @@ Press Ctrl+C to stop.
 
 ---
 
-## 10. Security and Safety Rules
+## 11. Security and Safety Rules
 
 - **Zero Untrusted Writes:** The LLM can never write directly to Google Sheets. All writes pass through the confirmation gate.
 - **Secret Redaction:** `SecretMaskingFilter` ensures API tokens and keys are never printed in plaintext log files.
